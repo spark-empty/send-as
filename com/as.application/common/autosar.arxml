@@ -21,10 +21,20 @@
 <ApplicationMode Comment="*" Name="OSDEFAULTAPPMODE" />
 </ApplicationModeList>
 </Task>
+<Task Activation="1" Application="OsDefaultApp" Autostart="False" Comment="*" Name="TASK3" Priority="8" Schedule="FULL" StackSize="2048">
+<ApplicationModeList Max="TBD">
+<ApplicationMode Comment="*" Name="OSDEFAULTAPPMODE" />
+</ApplicationModeList>
+</Task>
 </TaskList>
 <AlarmList Max="TBD">
 <Alarm Action="ActivateTask" Application="OsDefaultApp" Autostart="False" Callback="TBD" Comment="*" Counter="OsClock" Event="TBD" Name="Alarm_BswService" Period="100" StartTime="0" Task="SchM_BswService" />
-<Alarm Action="ActivateTask" Application="OsDefaultApp" Autostart="Absolute" Callback="TBD" Comment="*" Counter="OsClock" Event="TBD" Name="Alarm_TASK2" Period="1000" StartTime="5" Task="TASK2">
+<Alarm Action="ActivateTask" Application="OsDefaultApp" Autostart="Absolute" Callback="TBD" Comment="*" Counter="OsClock" Event="TBD" Name="Alarm_TASK2" Period="100" StartTime="5" Task="TASK2">
+<ApplicationModeList Max="TBD">
+<ApplicationMode Comment="*" Name="OSDEFAULTAPPMODE" />
+</ApplicationModeList>
+</Alarm>
+<Alarm Action="ActivateTask" Application="OsDefaultApp" Autostart="Absolute" Callback="TBD" Comment="*" Counter="OsClock" Event="TBD" Name="Alarm_TASK3" Period="200" StartTime="11" Task="TASK3">
 <ApplicationModeList Max="TBD">
 <ApplicationMode Comment="*" Name="OSDEFAULTAPPMODE" />
 </ApplicationModeList>
@@ -65,7 +75,7 @@
 <Pdu Comment="*" Name="TX_J1939TP_DirectNPdu" Size="64" />
 <Pdu Comment="*" Name="J1939TP_RX" Size="64" />
 <Pdu Comment="*" Name="J1939TP_TX" Size="64" />
-<Pdu Comment="*" Name="TxMsgLedInfo" Size="64" />
+<Pdu Comment="*" Name="TxMsgCloseLed" Size="64" />
 </PduList>
 </EcuC>
 <Can>
@@ -98,7 +108,7 @@
 <Pdu Comment="*" DataLengthCode="8" EcuCPduRef="TX_J1939TP_DtNPdu" HthRef="LS_Hth" Identifier="0x762" Name="TX_J1939TP_DtNPdu" TransmitNotifier="J1939Tp" UserNotification="CanIf_User" />
 <Pdu Comment="*" DataLengthCode="8" EcuCPduRef="TX_J1939TP_FcNPdu" HthRef="LS_Hth" Identifier="0x763" Name="TX_J1939TP_FcNPdu" TransmitNotifier="J1939Tp" UserNotification="CanIf_User" />
 <Pdu Comment="*" DataLengthCode="8" EcuCPduRef="TX_J1939TP_DirectNPdu" HthRef="LS_Hth" Identifier="0x764" Name="TX_J1939TP_DirectNPdu" TransmitNotifier="J1939Tp" UserNotification="CanIf_User" />
-<Pdu Comment="*" DataLengthCode="8" EcuCPduRef="TxMsgLedInfo" HthRef="LS_Hth" Identifier="0x101" Name="Led" TransmitNotifier="PduR" UserNotification="CanIf_User" />
+<Pdu Comment="*" DataLengthCode="8" EcuCPduRef="TxMsgCloseLed" HthRef="LS_Hth" Identifier="0x106" Name="CloseLed" TransmitNotifier="PduR" UserNotification="CanIf_User" />
 </TxPduList>
 <HrhList Max="TBD">
 <Hrh Comment="*" HrhRef="Can0Hrh" Name="LS_Hrh" SoftwareFilterUsed="True" />
@@ -182,9 +192,9 @@
 <Destination Comment="*" Module="Dcm" Name="Destination1" PduRef="J1939TP_RX" />
 </DestinationList>
 </Source>
-<Source Comment="*" Module="Com" Name="ComMsgLedInfo" PduRef="TxMsgLedInfo">
+<Source Comment="*" Module="Com" Name="ComMgCloseLed" PduRef="TxMsgCloseLed">
 <DestinationList Max="TBD">
-<Destination Comment="*" Module="CanIf" Name="CanIfLedInfo" PduRef="TxMsgLedInfo" />
+<Destination Comment="*" Module="CanIf" Name="CanIfCloseLed" PduRef="TxMsgCloseLed" />
 </DestinationList>
 </Source>
 </RoutineList>
@@ -216,14 +226,13 @@
 <Signal Comment="*" Endianess="BIG_ENDIAN" FirstTimeoutFactor="500" InitialValue="0" Name="Led1Sts" ReceivedNotification="NULL" Size="2" StartBit="39" TimeoutAction="NONE" TimeoutFactor="500" TimeoutNotification="NULL" TransferProperty="PENDING" Type="uint8" UpdateBitPosition="TBD" UpdateBitUsed="False" />
 <Signal Comment="*" Endianess="BIG_ENDIAN" FirstTimeoutFactor="500" InitialValue="0" Name="Led2Sts" ReceivedNotification="NULL" Size="2" StartBit="37" TimeoutAction="NONE" TimeoutFactor="500" TimeoutNotification="NULL" TransferProperty="PENDING" Type="uint8" UpdateBitPosition="TBD" UpdateBitUsed="False" />
 <Signal Comment="*" Endianess="BIG_ENDIAN" FirstTimeoutFactor="500" InitialValue="0" Name="Led3Sts" ReceivedNotification="NULL" Size="2" StartBit="35" TimeoutAction="NONE" TimeoutFactor="500" TimeoutNotification="NULL" TransferProperty="PENDING" Type="uint8" UpdateBitPosition="TBD" UpdateBitUsed="False" />
-<Signal Comment="*" Endianess="BIG_ENDIAN" FirstTimeoutFactor="500" InitialValue="0" Name="Led4Sts" ReceivedNotification="NULL" Size="2" StartBit="33" TimeoutAction="NONE" TimeoutFactor="200" TimeoutNotification="NULL" TransferProperty="PENDING" Type="uint8" UpdateBitPosition="TBD" UpdateBitUsed="False" />
 </SignalList>
 </IPdu>
-<IPdu Callout="NULL" Comment="*" DefaultValueForUnusedArea="0x5A" Direction="SEND" Name="LedInfo" NumberOfRepetions="0" PduGroupRef="PduGroup1" PduRef="TxMsgLedInfo" RepetionsPeriodFactor="10" RxSignalProcessing="DEFERRED" TimeOffsetFactor="0" TimePeriodFactor="100" TxMinimumDelayFactor="1" TxMode="PERIODIC">
+<IPdu Callout="NULL" Comment="*" DefaultValueForUnusedArea="0x5A" Direction="SEND" Name="CloseLed" NumberOfRepetions="0" PduGroupRef="PduGroup1" PduRef="TxMsgCloseLed" RepetionsPeriodFactor="10" RxSignalProcessing="DEFERRED" TimeOffsetFactor="0" TimePeriodFactor="100" TxMinimumDelayFactor="1" TxMode="PERIODIC">
 <GroupSignalList Max="TBD">
-<GroupSignal Comment="*" Endianess="OPAQUE" FirstTimeoutFactor="TBD" Name="LEDMessage" ReceivedNotification="NULL" Size="8" StartBit="0" TimeoutAction="REPLACE" TimeoutFactor="TBD" TimeoutNotification="NULL" TransferProperty="PENDING" UpdateBitPosition="TBD" UpdateBitUsed="False">
+<GroupSignal Comment="*" Endianess="BIG_ENDIAN" FirstTimeoutFactor="TBD" Name="ClosedLed" ReceivedNotification="NULL" Size="8" StartBit="0" TimeoutAction="REPLACE" TimeoutFactor="TBD" TimeoutNotification="NULL" TransferProperty="PENDING" UpdateBitPosition="TBD" UpdateBitUsed="False">
 <SignalList Max="TBD">
-<Signal Comment="*" Endianess="BIG_ENDIAN" InitialValue="1" Name="LED1" Size="8" StartBit="0" Type="uint8" UpdateBitPosition="TBD" UpdateBitUsed="False" />
+<Signal Comment="*" Endianess="BIG_ENDIAN" InitialValue="1" Name="LED2" Size="8" StartBit="31" Type="uint8" UpdateBitPosition="TBD" UpdateBitUsed="False" />
 </SignalList>
 </GroupSignal>
 </GroupSignalList>
